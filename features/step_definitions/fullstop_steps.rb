@@ -30,6 +30,19 @@ Given /^my dotfiles are symlinked in "([^"]*)"$/ do |dir|
   ['.bashrc', '.inputrc', '.vimrc'].map { |file| File.join(@dotfiles_dir,file) }.each { |file| ln file,'.', :verbose => false }
 end
 
+Given /^my home directory is in "([^"]*)"$/ do |dir|
+  raise "#{dir} should be in /tmp" unless File.split(dir)[0] == '/tmp'
+  rm_rf dir, :verbose => false, :secure => true
+  mkdir_p dir, :verbose => false
+  ENV['HOME'] = dir
+end
+
+Then /^the "([^"]*)" flag should be documented$/ do |flag|
+  regex = "#{flag} [A-Z_]+ +\\w+"
+  And("the output should match /#{regex}/")
+end
+
+
 RSpec::Matchers.define :exist do
   match do |actual|
     File.exist? actual

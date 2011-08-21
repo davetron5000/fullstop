@@ -46,10 +46,14 @@ def dotfiles_symlinked?(checkout_dir,destination)
 end
 
 options = {
-  :checkout => File.expand_path("~"),
+  :checkout => File.expand_path(ENV['HOME'])
 }
 option_parser = OptionParser.new do |opts|
-  opts.on("--checkout DIR") do |dir|
+  opts.banner = "Usage: fullstop [options] src_git_url [dest_dir]
+
+Checks out your dotfiles from src_git_url and symlinks the contents to dest_dir
+"
+  opts.on("--checkout DIR","Directory where src_git_url should be checked out for symlinking (default ~/dotfiles)") do |dir|
     options[:checkout] = File.expand_path(dir)
   end
 end
@@ -57,7 +61,7 @@ end
 option_parser.parse!
 
 source = ARGV.shift
-destination = ARGV.shift
+destination = ARGV.shift || File.expand_path(ENV['HOME'])
 checkout_dir = options[:checkout]
 
 exit main(source,destination,checkout_dir)
