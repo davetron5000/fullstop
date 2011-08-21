@@ -5,6 +5,46 @@ require 'optparse'
 
 include FileUtils
 
+def main(source,destination,checkout_dir)
+  checkout_dotfiles(source,checkout_dir)
+  if dotfiles_symlinked?(checkout_dir,destination)
+    STDERR.puts "error: dotfiles already set up in #{destination}"
+    1
+  else
+    symlink_dotfiles(checkout_dir,destination)
+    0
+  end
+end
+
+def checkout_dotfiles(source,checkout_dir)
+  mkdir_p checkout_dir
+  chdir checkout_dir
+  %x[git clone #{source} dotfiles]
+  checkout_dir
+end
+
+def dotfiles_in(checkout_dir)
+  Dir["#{checkout_dir}/dotfiles/.*"].select do |file|
+    !(['.','..'].include? File.basename(file))
+  end
+end
+
+def symlink_dotfiles(checkout_dir,destination)
+  mkdir_p destination
+  chdir destination
+
+  dotfiles_in(checkout_dir).each do |file|
+    ln file,'.'
+  end
+end
+
+def dotfiles_symlinked?(checkout_dir,destination)
+  dotfiles_in(checkout_dir).select { |file| 
+    filename = File.basename(file)
+    File.exist?(filename)
+  }.size > 0
+end
+
 options = {
   :checkout => File.expand_path("~"),
 }
@@ -18,17 +58,6 @@ option_parser.parse!
 
 source = ARGV.shift
 destination = ARGV.shift
-
 checkout_dir = options[:checkout]
 
-mkdir_p checkout_dir
-chdir checkout_dir
-%x[git clone #{source} dotfiles]
-
-mkdir_p destination
-chdir destination
-
-Dir["#{checkout_dir}/dotfiles/.*"].each do |file|
-  next if ['.','..'].include?(File.split(file)[-1])
-  ln file,'.'
-end
+exit main(source,destination,checkout_dir)
