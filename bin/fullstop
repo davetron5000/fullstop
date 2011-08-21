@@ -60,6 +60,11 @@ end
 
 option_parser.parse!
 
+if ARGV.empty?
+  STDERR.puts "error: src_git_url required"
+  puts option_parser
+  exit 1
+end
 source = ARGV.shift
 destination = ARGV.shift || File.expand_path(ENV['HOME'])
 checkout_dir = options[:checkout]

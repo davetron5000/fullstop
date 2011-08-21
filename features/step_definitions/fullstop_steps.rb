@@ -2,7 +2,7 @@ Given /^I have my dotfiles at "([^"]*)"$/ do |url|
   @dotfiles_path = url
 end
 
-Then /^my dotfiles should be symlinked to "([^"]*)"$/ do |dir|
+Then /^my dotfiles should be symlinked in "([^"]*)"$/ do |dir|
   ['.bashrc', '.inputrc', '.vimrc'].map { |file| File.join(dir,file) }.each do |file|
     file.should exist
   end
@@ -40,6 +40,14 @@ end
 Then /^the "([^"]*)" flag should be documented$/ do |flag|
   regex = "#{flag} [A-Z_]+ +\\w+"
   And("the output should match /#{regex}/")
+end
+
+Then /^my dotfiles should be checked out in my home directory in "([^"]*)"$/ do |dir|
+  Then("my dotfiles should be checked out in \"#{File.join(ENV['HOME'],dir)}\"")
+end
+
+Then /^my dotfiles should be symlinked in my home directory$/ do
+  Then("my dotfiles should be symlinked in \"#{ENV['HOME']}\"")
 end
 
 
