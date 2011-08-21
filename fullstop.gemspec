@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Dave Copeland"]
   s.email       = ["davetron5000@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Manage your dotfiles}
+  s.description = %q{Manage your dotfiles}
 
   s.rubyforge_project = "fullstop"
 
@@ -17,4 +17,6 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+
+  s.add_development_dependency("aruba")
 end
