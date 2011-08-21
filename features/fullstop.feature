@@ -4,7 +4,8 @@ Feature: Maintain dotfiles
 
   Scenario: Symlink my dotfiles
     Given The directory "/tmp/fullstop-testing" doesn't exist
+    And The directory "/tmp/dotfiles" doesn't exist
     And I have my dotfiles at "git://github.com/davetron5000/testdotfiles.git"
-    When I successfully run `fullstop git://github.com/davetron5000/testdotfiles.git /tmp/fullstop-testing`
-    Then my dotfiles should be checked out in "~/dotfiles"
-    Then my dotfiles should be symlinked to "/tmp/fullstop-testing"
+    When I successfully run `fullstop --checkout /tmp/dotfiles git://github.com/davetron5000/testdotfiles.git /tmp/fullstop-testing`
+    Then my dotfiles should be checked out in "/tmp/dotfiles"
+    And my dotfiles should be symlinked to "/tmp/fullstop-testing"
